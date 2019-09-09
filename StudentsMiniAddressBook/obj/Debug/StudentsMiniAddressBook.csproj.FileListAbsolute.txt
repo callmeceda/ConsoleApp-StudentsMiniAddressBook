@@ -1,0 +1,10 @@
+D:\C#\Exercise projects\StudentsMiniAddressBook\StudentsMiniAddressBook\bin\Debug\StudentsMiniAddressBook.exe.config
+D:\C#\Exercise projects\StudentsMiniAddressBook\StudentsMiniAddressBook\bin\Debug\StudentsMiniAddressBook.exe
+D:\C#\Exercise projects\StudentsMiniAddressBook\StudentsMiniAddressBook\bin\Debug\StudentsMiniAddressBook.pdb
+D:\C#\Exercise projects\StudentsMiniAddressBook\StudentsMiniAddressBook\bin\Debug\Newtonsoft.Json.dll
+D:\C#\Exercise projects\StudentsMiniAddressBook\StudentsMiniAddressBook\bin\Debug\Newtonsoft.Json.xml
+D:\C#\Exercise projects\StudentsMiniAddressBook\StudentsMiniAddressBook\obj\Debug\StudentsMiniAddressBook.csprojAssemblyReference.cache
+D:\C#\Exercise projects\StudentsMiniAddressBook\StudentsMiniAddressBook\obj\Debug\StudentsMiniAddressBook.csproj.CoreCompileInputs.cache
+D:\C#\Exercise projects\StudentsMiniAddressBook\StudentsMiniAddressBook\obj\Debug\StudentsMiniAddressBook.csproj.CopyComplete
+D:\C#\Exercise projects\StudentsMiniAddressBook\StudentsMiniAddressBook\obj\Debug\StudentsMiniAddressBook.exe
+D:\C#\Exercise projects\StudentsMiniAddressBook\StudentsMiniAddressBook\obj\Debug\StudentsMiniAddressBook.pdb

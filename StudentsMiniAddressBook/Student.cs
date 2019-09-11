@@ -15,24 +15,11 @@ namespace StudentsMiniAddressBook
         private string id;
 
         //Helper Method. Checks if any of the carachters in a given string is a number
-        /*private static bool LettersOrDigits(string s)
-        {
-            foreach (char charachter in s)
-            {
-                if (char.IsDigit(charachter))
-                {
-                    return false;
-                }
-            }
-            return true;
-        }*/
-
         //returns true if s that is char inside of string inputName is digit, and false if is not
         private static bool LettersOrDigits(string inputName)
         {
             return inputName.Any(s => char.IsDigit(s));
         }
-
 
         public string StudentID
         {
@@ -96,21 +83,13 @@ namespace StudentsMiniAddressBook
                 }
                 else
                     throw new FormatException("Input value for number of subjects left for pass is not valid.");
-
             }
         }
         //Cheking if user input is correct for each of the class data members that are variables.
-        /*private static string validateInput(string input)
-        {
-            if (input == "" || input == null)
-            {
-                return "Input value is not valid. Cannot be empty.";
-            }
-            return "";
-        }*/
 
-        //If i dont initalize these 4 parameters before assaigning them to class properties, i get 
-        //null reference exceptions because no value is assign to them.
+        //If i dont make default parameterless constructor JSON deserializer wont work. It will have nothing
+        //to build Student objects on and the Students list will always be null and LoadStudentListFromLocStorage
+        //method wont work.
         public Student()
         {
             StudentID = "";
@@ -140,8 +119,6 @@ namespace StudentsMiniAddressBook
                 throw new NullReferenceException();
 
             }
-
-
 
             //Constructor parametars must be the same name as class properties so that json deserializer can
             //make a valid student object of json properties. This way json deserializer knows how to bind json

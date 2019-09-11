@@ -9,18 +9,14 @@ using System.IO;
 
 namespace StudentsMiniAddressBook
 {
-
     class Program
     {
         private static Student newStudent;
         
-
-        //private static Dictionary<string, Student> StudentDictionary = new Dictionary<string, Student>();
         private static List<Student> Students = new List<Student>();
         private static List<Student> newList;
         private static void StoreStudentsInAList(Student student)
         {
-            //StudentDictionary.Add(student.StudentID, student);
             try
             {
                 Students.Add(student);
@@ -30,12 +26,10 @@ namespace StudentsMiniAddressBook
             {
                 throw new Exception("Students were not stored.");
             }
-
         }
 
         private static void StoreStudentListInALocStorageAsTxt()
         {
-            //string json = JsonConvert.SerializeObject(StudentDictionary);
             string json = JsonConvert.SerializeObject(Students);
             File.WriteAllText
                 (path: @"D:\C#\Exercise projects\StudentsMiniAddressBook\StoredStudents\StudentsList.txt",
@@ -59,16 +53,11 @@ namespace StudentsMiniAddressBook
                         " there were no students info to be found.");
                     Console.WriteLine("New list will be created.");
                     Console.ReadKey();
-                    //StudentDictionary = new Dictionary<string, Student>();*/
-
                     Students = new List<Student>();
                 }
                 else
                 {
-                    //StudentDictionary = new Dictionary<string, Student>();
                     Students = JsonConvert.DeserializeObject<List<Student>>(LoadJson);
-                    
-
                 }
             }
             else
@@ -77,7 +66,6 @@ namespace StudentsMiniAddressBook
                 Console.ReadKey();
                 throw new Exception();
             }
-            
         }
 
         //Creating a student
@@ -114,14 +102,6 @@ namespace StudentsMiniAddressBook
 
             try
             {
-               /* do
-                {
-                    Console.Write("Enter number of subjects that student has to pass: ");
-                    inputSubjcetsLeftNo = Convert.ToInt32(Console.ReadLine());
-                } while (inputSubjcetsLeftNo < 0 || inputSubjcetsLeftNo > 10 || inputSubjcetsLeftNo == null);
-                */
-
-                
                 foreach (Student stud in Students)
                 {
                     if (stud.StudentID != inputID)
@@ -149,8 +129,6 @@ namespace StudentsMiniAddressBook
                         break;
                     }
                 }
-                
-
             }
             catch (FormatException error)
             {
@@ -404,8 +382,6 @@ namespace StudentsMiniAddressBook
                     break;
                 }
            }
-
-
             string name;
             command = Console.ReadLine();
 
@@ -462,14 +438,12 @@ namespace StudentsMiniAddressBook
                 switch (command)
                 {
                     case "1":
-                        //ClearConsoleLines();
                         //TestData();
                         CreateNewStudent();
                         Console.WriteLine();
                         break;
 
                     case "2":
-                        //ClearConsoleLines();
                         FindStudent();
                         Console.WriteLine();
                         break;
@@ -493,16 +467,6 @@ namespace StudentsMiniAddressBook
                         Console.ReadKey();
                         break;
                 }
-            }
-        }
-
-        //Helper Method. Delets 
-        public static void ClearConsoleLines()
-        {
-            int currentLine = Console.CursorTop;
-            for (int i = Console.CursorTop; i <= 5; i--)
-            {
-                Console.Write("\r" + new string(' ', Console.WindowWidth) + "\r");
             }
         }
 
@@ -535,6 +499,5 @@ namespace StudentsMiniAddressBook
             //TestData();
             //Console.ReadKey();
         }
-
     }
 }

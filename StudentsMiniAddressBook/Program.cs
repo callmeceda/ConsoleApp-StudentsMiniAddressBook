@@ -13,10 +13,11 @@ namespace StudentsMiniAddressBook
     class Program
     {
         private static Student newStudent;
+        
 
         //private static Dictionary<string, Student> StudentDictionary = new Dictionary<string, Student>();
         private static List<Student> Students = new List<Student>();
-
+        private static List<Student> newList;
         private static void StoreStudentsInAList(Student student)
         {
             //StudentDictionary.Add(student.StudentID, student);
@@ -27,7 +28,7 @@ namespace StudentsMiniAddressBook
             }
             catch (Exception)
             {
-                throw new Exception("Contact were not stored.");
+                throw new Exception("Students were not stored.");
             }
 
         }
@@ -37,7 +38,7 @@ namespace StudentsMiniAddressBook
             //string json = JsonConvert.SerializeObject(StudentDictionary);
             string json = JsonConvert.SerializeObject(Students);
             File.WriteAllText
-                (path: @"D:\C#\Exercise projects\ContactsConsoleApp\StoredStudents\StudentsList.txt",
+                (path: @"D:\C#\Exercise projects\StudentsMiniAddressBook\StoredStudents\StudentsList.txt",
                 contents: json);
         }
 
@@ -48,24 +49,35 @@ namespace StudentsMiniAddressBook
         private static void LoadStudentListFromLocStorage()
         {
             string LoadJson = File.ReadAllText
-                (path: @"D:\C#\Exercise projects\ContactsConsoleApp\StoredStudents\StudentsList.txt");
+                (path: @"D:\C#\Exercise projects\StudentsMiniAddressBook\StoredStudents\StudentsList.txt");
 
-            if (LoadJson == null)
+            if (File.Exists(@"D:\C#\Exercise projects\StudentsMiniAddressBook\StoredStudents\StudentsList.txt"))
             {
-                Console.WriteLine("\nIn the student list that is used for storing," +
-                    " there were no students info to be found.");
-                Console.WriteLine("New list will be created.");
-                Console.ReadKey();
-                //StudentDictionary = new Dictionary<string, Student>();*/
+                if (LoadJson == null && LoadJson == "")
+                {
+                    Console.WriteLine("\nIn the student list that is used for storing," +
+                        " there were no students info to be found.");
+                    Console.WriteLine("New list will be created.");
+                    Console.ReadKey();
+                    //StudentDictionary = new Dictionary<string, Student>();*/
 
-                Students = new List<Student>();
+                    Students = new List<Student>();
+                }
+                else
+                {
+                    //StudentDictionary = new Dictionary<string, Student>();
+                    Students = JsonConvert.DeserializeObject<List<Student>>(LoadJson);
+                    
+
+                }
             }
             else
             {
-                //StudentDictionary = new Dictionary<string, Student>();
-                Students = JsonConvert.DeserializeObject<List<Student>>(LoadJson);
-
+                Console.Write("No file has been found on that location in local memory.");
+                Console.ReadKey();
+                throw new Exception();
             }
+            
         }
 
         //Creating a student
@@ -78,12 +90,12 @@ namespace StudentsMiniAddressBook
                 inputID = Console.ReadLine();
             } while (inputID == "");
 
-            string inputName = "";
+            string inputName;
             do
             {
                 Console.Write("Enter name of a student: ");
-                inputName.ToLower();
                 inputName = Console.ReadLine();
+                inputName.ToLower();
             } while (inputName == "");
 
             string inputEmail;
@@ -94,29 +106,55 @@ namespace StudentsMiniAddressBook
             } while (inputEmail == "");
 
             int? inputSubjcetsLeftNo;
+            do
+            {
+                Console.Write("Enter number of subjects that student has to pass: ");
+                inputSubjcetsLeftNo = Convert.ToInt32(Console.ReadLine());
+            } while (inputSubjcetsLeftNo < 0 || inputSubjcetsLeftNo > 10 || inputSubjcetsLeftNo == null);
 
             try
             {
-                do
+               /* do
                 {
                     Console.Write("Enter number of subjects that student has to pass: ");
                     inputSubjcetsLeftNo = Convert.ToInt32(Console.ReadLine());
                 } while (inputSubjcetsLeftNo < 0 || inputSubjcetsLeftNo > 10 || inputSubjcetsLeftNo == null);
+                */
 
-                newStudent = new Student
-                    (id: inputID, name: inputName.ToLower(), email: inputEmail, subjects: inputSubjcetsLeftNo.Value);
-                StoreStudentsInAList(newStudent);
-                StoreStudentListInALocStorageAsTxt();
+                
+                foreach (Student stud in Students)
+                {
+                    if (stud.StudentID != inputID)
+                    {
+                        newStudent = new Student
+                            (id: inputID,
+                            name: inputName.ToLower(),
+                            email: inputEmail,
+                            subj: inputSubjcetsLeftNo.Value);
+                        StoreStudentsInAList(newStudent);
+                        StoreStudentListInALocStorageAsTxt();
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine();
+                        Console.Write("There is already student with that ID \n\r" +
+                            "cant create student with that student ID \n\r");
+                        Console.WriteLine
+                            ("ID: " + stud.StudentID + "\n\r" +
+                            "name: " + stud.StudentName + "\n\r" +
+                            "email: " + stud.StudentEmail + "\n\r" + 
+                            "subjects left to pass: " + stud.SubjectsLeft);
+                        Console.ReadKey();
+                        break;
+                    }
+                }
+                
+
             }
             catch (FormatException error)
             {
                 Console.WriteLine("Type of user value is not valid for this input. Input must be text.");
-                Console.WriteLine(error.Message);
-                Console.ReadKey();
-            }
-            catch (Exception error)
-            {
-                Console.WriteLine("Invalid input value");
                 Console.WriteLine(error.Message);
                 Console.ReadKey();
             }
@@ -125,21 +163,23 @@ namespace StudentsMiniAddressBook
         {
             bool studentFound = false;
             bool studentLookedUp = false;
-            string input = "";
-            input.ToLower();
+            string input;
+            //string lowerInput;
+            //input.ToLower();
             while (!studentLookedUp && !studentFound)
             {
                 do
                 {
                     Console.Write("Enter name of a student that you want to find: ");
                     input = Console.ReadLine();
+                    //lowerInput = input.ToLower();
                     studentLookedUp = true;
                     studentFound = false;
                 } while (input == "");
 
                 foreach (Student student in Students)
                 {
-                    if (input == student.StudentName)
+                    if (string.Compare(input.ToLower(), student.StudentName, ignoreCase:true) == 0)
                     {
                         Console.Write
                             ("Student name: {0}\r\n" +
@@ -155,7 +195,7 @@ namespace StudentsMiniAddressBook
                     {
                         continue;
                     }
-                }
+                } 
                 if (studentFound == false)
                 {
                     Console.Write("Name of a student you entered was not found in list of Students \r\n");
@@ -166,7 +206,7 @@ namespace StudentsMiniAddressBook
 
         private static void orderByID()
         {
-            for (int pass = 0; pass < Students.Count - 1; pass++)
+            /*for (int pass = 0; pass < Students.Count - 1; pass++)
             {
                 for (int elem = 0; elem < Students.Count - 1 - pass; elem++)
                 {
@@ -189,12 +229,20 @@ namespace StudentsMiniAddressBook
                     Console.WriteLine
                         ("Student ID: {0}, name: {1}, email: {2}, subjects left{3}",
                         student.StudentID, student.StudentName, student.StudentEmail, student.SubjectsLeft);
+            }*/
+
+            newList = Students.OrderBy(s => s.StudentID).ToList();
+            foreach (Student student in newList)
+            {
+                Console.WriteLine
+                        ("Student ID: {0}, name: {1}, email: {2}, subjects left{3}",
+                        student.StudentID, student.StudentName, student.StudentEmail, student.SubjectsLeft);
             }
         }
 
         private static void orderByName()
         {
-            for (int pass = 0; pass < Students.Count - 1; pass++)
+            /*for (int pass = 0; pass < Students.Count - 1; pass++)
             {
                 for (int elem = 0; elem < Students.Count - 1 - pass; elem++)
                 {
@@ -217,12 +265,21 @@ namespace StudentsMiniAddressBook
                     Console.WriteLine
                         ("Student name: {0}, id: {1}, email: {2}, subjcets left{3}",
                         student.StudentName, student.StudentID, student.StudentEmail, student.SubjectsLeft);
+            }*/
+
+            newList = Students.OrderBy(s => s.StudentName).ToList();
+            foreach (Student student in newList)
+            {
+                Console.WriteLine
+                        ("Student name: {0}, id: {1}, email: {2}, subjects left{3}",
+                        student.StudentName, student.StudentID, student.StudentEmail, student.SubjectsLeft);
             }
         }
 
-        private static void OrderBySubjetsLeftToPass()
-        {
 
+        private static void OrderBySubjectsLeftToPass_Descending()
+        {
+            /*
             //Number of times it passed through list
             for (int pass = 0; pass < Students.Count - 1; pass++)
             {
@@ -249,6 +306,30 @@ namespace StudentsMiniAddressBook
                     Console.WriteLine
                         ("Subjcets lef to to pass: {0}, id: {1}, name: {2}, email{3}",
                         student.SubjectsLeft, student.StudentID, student.StudentName, student.StudentEmail);
+            }*/
+
+            var subjects = from student in Students
+                      orderby student.SubjectsLeft descending
+                      select student;
+            newList = subjects.ToList();
+            foreach (Student student in newList)
+            {
+                Console.WriteLine
+                        ("Subjects left: {0}, id: {1}, name: {2}, email: {3}",
+                        student.SubjectsLeft, student.StudentID, student.StudentName, student.StudentEmail);
+            }
+        }
+        private static void OrderBySubjectsLeftToPass_Ascending()
+        {
+            var subjects = from student in Students
+                           orderby student.SubjectsLeft ascending
+                           select student;
+            newList = subjects.ToList();
+            foreach (Student student in newList)
+            {
+                Console.WriteLine
+                        ("Subjects left: {0}, id: {1}, name: {2}, email: {3}",
+                        student.SubjectsLeft, student.StudentID, student.StudentName, student.StudentEmail);
             }
         }
         private static void DisplayStudents()
@@ -262,67 +343,73 @@ namespace StudentsMiniAddressBook
             switch (command)
             {
                 case "1":
+                    Console.WriteLine();
                     orderByID();
                     Console.ReadKey();
                     break;
 
                 case "2":
+                    Console.WriteLine();
                     orderByName();
                     Console.ReadKey();
                     break;
 
                 case "3":
-                    OrderBySubjetsLeftToPass();
+                    Console.WriteLine();
+                    Console.Write
+                        ("Press 1 for descenidng order \n\r" +
+                         "Press 2 for ascending order \n\r");
+                    string command2 = Console.ReadLine();
+                    switch (command2)
+                    {
+                        case "1":
+                            Console.WriteLine();
+                            OrderBySubjectsLeftToPass_Descending();
+                            break;
+
+                        case "2":
+                            Console.WriteLine();
+                            OrderBySubjectsLeftToPass_Ascending();
+                            break;
+                        default:
+                            break;
+                    }
                     Console.ReadKey();
                     break;
-
+                case "4":
+                    Console.WriteLine();
+                    OrderBySubjectsLeftToPass_Ascending();
+                    Console.ReadKey();
+                    break;
                 default:
                     break;
             }
         }
-        /*private static bool Remove(int student)
-        {
-            for (student = 0; student < Students.Count - 1; student ++)
-            {
-
-            }
-        }*/
         private static void DeleteStudent()
         {
             string command = "";
             int studentNo = 1;
 
-            foreach (Student student in Students)
-            {
-                Console.WriteLine
-                    ("{0}). Student ID: {1}, Student Name: {2}," +
-                    " Student email: {3}, Subjects left to pass: {4}",
-                    studentNo, student.StudentID, student.StudentName,
-                    student.StudentEmail, student.SubjectsLeft);
-                Console.Write("Press {0} to remove student with number {1}\r\n", studentNo, studentNo);
-                if (studentNo < Students.Count)
+           foreach (Student student in Students)
+           {
+               Console.WriteLine
+                   ("{0}). Student ID: {1}, Student Name: {2}," +
+                   " Student email: {3}, Subjects left to pass: {4}",
+                   studentNo, student.StudentID, student.StudentName,
+                   student.StudentEmail, student.SubjectsLeft);
+               Console.Write("Press {0} to remove student with number {1}\r\n", studentNo, studentNo);
+                while (studentNo < Students.Count)
                 {
-                    studentNo += 1;
+                    studentNo++;
+                    break;
                 }
-
-            }
-            /*for (int i = 0; i < Students.Count - 1; i++)
-            {
-                Console.WriteLine
-                    ("{0}). Student ID: {1}, Student Name: {2}," +
-                    " Student email: {3}, Subjects left to to pass: {4}",
-                    studentNo, Students[i].StudentID, Students[i].StudentName,
-                    Students[i].StudentEmail, Students[i].SubjectsLeft);
-                Console.Write("Press {0} to remove student with number {1}\r\n", studentNo, studentNo);
-                studentNo += 1;
-               
-            }*/
+           }
 
 
             string name;
             command = Console.ReadLine();
 
-            for (int i = 0; i < Students.Count - 1; i++)
+            for (int i = 0; i <= Students.Count - 1; i++)
             {
                 if (command == (i + 1).ToString())
                 {
@@ -332,6 +419,7 @@ namespace StudentsMiniAddressBook
                     {
                         Console.Write("Student was removed successfully \r\n");
                         Console.ReadLine();
+                        StoreStudentListInALocStorageAsTxt();
                         break;
                     }
                     else
@@ -355,6 +443,7 @@ namespace StudentsMiniAddressBook
             }
             return true;
         }
+
         private static void AddressBookMenu()
         {
 
@@ -375,20 +464,24 @@ namespace StudentsMiniAddressBook
                     case "1":
                         //ClearConsoleLines();
                         //TestData();
-                        //CreateNewStudent();
+                        CreateNewStudent();
+                        Console.WriteLine();
                         break;
 
                     case "2":
                         //ClearConsoleLines();
                         FindStudent();
+                        Console.WriteLine();
                         break;
 
                     case "3":
                         DisplayStudents();
+                        Console.WriteLine();
                         break;
 
                     case "4":
                         DeleteStudent();
+                        Console.WriteLine();
                         break;
 
                     case "5":
@@ -396,6 +489,8 @@ namespace StudentsMiniAddressBook
                         break;
 
                     default:
+                        Console.WriteLine("You must choose one of five numbers(options)");
+                        Console.ReadKey();
                         break;
                 }
             }
@@ -414,12 +509,13 @@ namespace StudentsMiniAddressBook
         private static void TestData()
         {
             string[] students = { "Marko", "Janko", "Darko", "Ranko", "Branko" };
-            int NoSubj = 1;
+            int NoSubj = 1; //number of subjects
             int id = 1;
             foreach (string names in students)
             {
                 Student newStudent1 = new Student
-                    (name: names, id: names + "'s ID - " + id, email: names + "'s email", subjects: NoSubj);
+                    (name: names, id: names + "'s ID - " + id,
+                    email: names + "'s email", subj: NoSubj);
                 StoreStudentsInAList(newStudent1);
                 NoSubj += 1;
                 id++;
@@ -438,8 +534,6 @@ namespace StudentsMiniAddressBook
             AddressBookMenu();
             //TestData();
             //Console.ReadKey();
-
-
         }
 
     }

@@ -85,7 +85,7 @@ namespace StudentsMiniAddressBook
                     throw new FormatException("Input value for number of subjects left for pass is not valid.");
             }
         }
-        //Cheking if user input is correct for each of the class data members that are variables.
+        
 
         //If i dont make default parameterless constructor JSON deserializer wont work. It will have nothing
         //to build Student objects on and the Students list will always be null and LoadStudentListFromLocStorage
@@ -119,10 +119,6 @@ namespace StudentsMiniAddressBook
                 throw new NullReferenceException();
 
             }
-
-            //Constructor parametars must be the same name as class properties so that json deserializer can
-            //make a valid student object of json properties. This way json deserializer knows how to bind json
-            //properties to the constructors parametars because they share the same name ?
             //if (string.Compare(StudentName, name.ToLower(), ignoreCase: true) == 0)
             //{
                 this.StudentName = name;
